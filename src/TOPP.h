@@ -211,6 +211,9 @@ public:
     bool hasvelocitylimits;
     std::vector<dReal> vmax;
 
+    // critical point of a non-valid velocity profile
+    int mvc_critical_point;
+
     std::list<SwitchPoint> switchpointslist; // list of switch points, ordered by s
     std::list<std::pair<dReal,dReal> > zlajpahlist; // list of zlajpah points
     std::list<Profile> resprofileslist; // resulting profiles
@@ -411,6 +414,8 @@ dReal  EmergencyStop(Constraints& constraints, dReal sdbeg, Trajectory& restraje
 // Various operations on Vectors
 dReal VectorMin(const std::vector<dReal>& v);
 dReal VectorMax(const std::vector<dReal>& v);
+dReal VectorArgMin(const std::vector<dReal>& v);
+dReal VectorArgMax(const std::vector<dReal>&v);
 void VectorAdd(const std::vector<dReal>&a, const std::vector<dReal>&b,  std::vector<dReal>& res, dReal coefa=1, dReal coefb=1);
 void VectorMultScalar(const std::vector<dReal>&a, std::vector<dReal>& res, dReal scalar);
 dReal VectorNorm(const std::vector<dReal>&v);

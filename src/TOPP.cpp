@@ -88,6 +88,7 @@ void Constraints::Discretize() {
 
 void Constraints::ComputeMVCBobrow() {
     mvcbobrow.resize(ndiscrsteps);
+
     for(int i=0; i<ndiscrsteps; i++) {
         mvcbobrow[i] = SdLimitBobrowInit(discrsvect[i]);
     }
@@ -536,6 +537,7 @@ void QuadraticConstraints::InterpolateDynamics(dReal s, std::vector<dReal>& a, s
     b.resize(nconstraints);
     c.resize(nconstraints);
     BOOST_ASSERT(s>=-TINY && s<=trajectory.duration+TINY);
+
     if(s < 0)
         s = 0;
     if(s >= trajectory.duration-TINY) {
@@ -1759,6 +1761,8 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
 
     if(VectorMin(constraints.mvcbobrow) <= TINY) {
         //std::cout << "[TOPP] MVCBobrow hit 0\n";
+        int s0 = VectorArgMin(constraints.mvcbobrow);
+        constraints.mvc_critical_point = s0;
         return TOPP_MVC_HIT_ZERO;
     }
 
@@ -2411,22 +2415,21 @@ void ReadVectorFromStream(std::istream& s, size_t N, std::vector<dReal>&resvect)
 }
 
 dReal VectorMin(const std::vector<dReal>&v){
-    dReal res = INF;
-    for(int i=0; i<int(v.size()); i++) {
-        res = std::min(res,v[i]);
-    }
-    return res;
+    int smin = std::min_element(v.begin(), v.end()) - v.begin();
+    return v[smin];
 }
-
-
 dReal VectorMax(const std::vector<dReal>&v){
-    dReal res = -INF;
-    for(int i=0; i<int(v.size()); i++) {
-        res = std::max(res,v[i]);
-    }
-    return res;
+    int smax = std::max_element(v.begin(), v.end()) - v.begin();
+    return v[smax];
 }
-
+dReal VectorArgMin(const std::vector<dReal>&v){
+    int smin = std::min_element(v.begin(), v.end()) - v.begin();
+    return smin;
+}
+dReal VectorArgMax(const std::vector<dReal>&v){
+    int smax = std::max_element(v.begin(), v.end()) - v.begin();
+    return smax;
+}
 
 void PrintVector(const std::vector<dReal>&v){
     std::cout << "[";
