@@ -2043,6 +2043,8 @@ int VIP(Constraints& constraints, dReal sdbegmin, dReal sdbegmax, dReal& sdendmi
 
     if(VectorMin(constraints.mvcbobrow) <= TINY) {
         std::cout << "[TOPP::VIP] MVCBobrow hit 0 \n";
+        int s0 = VectorArgMin(constraints.mvcbobrow);
+        constraints.mvc_critical_point = s0;
         return TOPP_MVC_HIT_ZERO;
     }
 
