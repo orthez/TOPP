@@ -181,8 +181,11 @@ public:
         return res;
     }
 
-    int GetMVCCriticalPoint(){
-            return pconstraints->mvc_critical_point;
+    int GetCriticalPoint(){
+            return pconstraints->GetCriticalPoint();
+    }
+    dReal GetCriticalPointValue(){
+            return pconstraints->GetCriticalPointValue();
     }
 
     int ReparameterizeTrajectory(TOPP::dReal reparamtimestep=0)
@@ -370,7 +373,8 @@ BOOST_PYTHON_MODULE(TOPPbindings) {
     .def("GetAlpha",&TOPPInstance::GetAlpha)
     .def("GetBeta",&TOPPInstance::GetBeta)
     .def("RunComputeProfiles",&TOPPInstance::RunComputeProfiles)
-    .def("GetMVCCriticalPoint",&TOPPInstance::GetMVCCriticalPoint)
+    .def("GetCriticalPoint",&TOPPInstance::GetCriticalPoint)
+    .def("GetCriticalPointValue",&TOPPInstance::GetCriticalPointValue)
     .def("ReparameterizeTrajectory",&TOPPInstance::ReparameterizeTrajectory, ReparameterizeTrajectory_overloads(args("reparamtimestep")))
     .def("RunVIP",&TOPPInstance::RunVIP)
     .def("RunVIPBackward",&TOPPInstance::RunVIPBackward)

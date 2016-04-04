@@ -1298,6 +1298,8 @@ int IntegrateForward(Constraints& constraints, dReal sstart, dReal sdstart, dRea
             svect.push_back(scur);
             sdvect.push_back(sdcur);
             sddvect.push_back(0);
+            constraints.SetCriticalPoint(svect.size(), scur);
+            std::cout << "LC hit s0 at " << svect.size() << " val=" << scur << " sbeg=" << sdstart << std::endl;
             returntype = INT_BOTTOM;
             break;
         }
@@ -1723,7 +1725,7 @@ int ComputeLimitingCurves(Constraints& constraints){
         }
 
         if(integratestatus == INT_BOTTOM) {
-            std::cerr << str(boost::format("IntegrateBackward INT_BOTTOM, s=%.15e, sd=%.15e\n")%sbackward%sdbackward);
+            std::cout << str(boost::format("IntegrateBackward INT_BOTTOM, s=%.15e, sd=%.15e\n")%sbackward%sdbackward) << std::endl;
             return CLC_BOTTOM;
         }
 
@@ -1737,7 +1739,7 @@ int ComputeLimitingCurves(Constraints& constraints){
         }
 
         if(integratestatus == INT_BOTTOM) {
-            std::cerr << str(boost::format("IntegrateForward INT_BOTTOM, s=%.15e, sd=%.15e\n")%sforward%sdforward);
+            std::cout << str(boost::format("IntegrateForward INT_BOTTOM, s=%.15e, sd=%.15e\n")%sforward%sdforward) << std::endl;
             return CLC_BOTTOM;
         }
     }
@@ -1760,9 +1762,13 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
     }
 
     if(VectorMin(constraints.mvcbobrow) <= TINY) {
-        //std::cout << "[TOPP] MVCBobrow hit 0\n";
+        //########################################
+        //Critical Point Case D0: MVC hits zero: 
+        // find s_0 such that MVC(s_0)=0
+        //########################################
         int s0 = VectorArgMin(constraints.mvcbobrow);
-        constraints.mvc_critical_point = s0;
+        dReal s0val = VectorMin(constraints.mvcbobrow);
+        constraints.SetCriticalPoint(s0,s0val);
         return TOPP_MVC_HIT_ZERO;
     }
 
@@ -1850,6 +1856,7 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
         // Now if it still fails, then we can't do anything about it
         if(ret==INT_BOTTOM) {
             message = "Start profile hit 0";
+            ret = IntegrateForward(constraints,0,sdbeg,constraints.integrationtimestep,resprofile,1e5,testaboveexistingprofiles,testmvc,zlajpah);
             std::cout << message << std::endl;
             integrateprofilesstatus = false;
             continue;
@@ -1903,8 +1910,6 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
 
             }
         }
-        if(ret==INT_BOTTOM) {
-        }
         // Now if it still fails, shouganai
         if(ret==INT_BOTTOM) {
             message = "End profile hit 0";
@@ -1912,7 +1917,6 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
             integrateprofilesstatus = false;
             continue;
         }
-
 
         /////////////////////// Zlajpah //////////////////////////
         // Add separation points between MVCBobrow and MVCCombined to zlajpahlist
@@ -2044,7 +2048,8 @@ int VIP(Constraints& constraints, dReal sdbegmin, dReal sdbegmax, dReal& sdendmi
     if(VectorMin(constraints.mvcbobrow) <= TINY) {
         std::cout << "[TOPP::VIP] MVCBobrow hit 0 \n";
         int s0 = VectorArgMin(constraints.mvcbobrow);
-        constraints.mvc_critical_point = s0;
+        dReal s0val = VectorMin(constraints.mvcbobrow);
+        constraints.SetCriticalPoint(s0,s0val);
         return TOPP_MVC_HIT_ZERO;
     }
 
@@ -2055,7 +2060,7 @@ int VIP(Constraints& constraints, dReal sdbegmin, dReal sdbegmax, dReal& sdendmi
     // Compute the limiting curves
     int resclc = ComputeLimitingCurves(constraints);
     if(resclc == CLC_SWITCH || resclc == CLC_BOTTOM) {
-        std::cout << "[TOPP::VIP] resclc == CLC_SWITCH or CLC_BOTTOM \n";
+        std::cout << "[TOPP::VIP] resclc == CLC_SWITCH or CLC_BOTTOM" << std::endl;
         return TOPP_CLC_ERROR;
     }
 

@@ -211,9 +211,6 @@ public:
     bool hasvelocitylimits;
     std::vector<dReal> vmax;
 
-    // critical point of a non-valid velocity profile
-    int mvc_critical_point;
-
     std::list<SwitchPoint> switchpointslist; // list of switch points, ordered by s
     std::list<std::pair<dReal,dReal> > zlajpahlist; // list of zlajpah points
     std::list<Profile> resprofileslist; // resulting profiles
@@ -318,6 +315,21 @@ public:
         std::cout << "Virtual method not implemented\n";
         throw TOPPException("Virtual method not implemented");
     };
+
+    // critical point of a non-valid velocity profile
+    int critical_point;
+    dReal critical_point_value;
+    
+    void SetCriticalPoint(int s, dReal sval){
+            this->critical_point = s;
+            this->critical_point_value = sval;
+    }
+    int GetCriticalPoint(){
+            return this->critical_point;
+    }
+    dReal GetCriticalPointValue(){
+            return this->critical_point_value;
+    }
 
     // Add a switch point to switchpointslist
     virtual void AddSwitchPoint(int i, int switchpointtype, dReal sd = -1);
