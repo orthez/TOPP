@@ -1726,6 +1726,7 @@ int ComputeLimitingCurves(Constraints& constraints){
 
         if(integratestatus == INT_BOTTOM) {
             std::cout << str(boost::format("IntegrateBackward INT_BOTTOM, s=%.15e, sd=%.15e\n")%sbackward%sdbackward) << std::endl;
+            std::cout << "SwitchPoint:" << sswitch << " val=" << sdswitch << std::endl;
             return CLC_BOTTOM;
         }
 
@@ -2003,6 +2004,17 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
             message = str(boost::format("CLC discontinuous s=%.15e")%s);
             std::cout << message << std::endl;
             integrateprofilesstatus = false;
+            //########################################
+            //Critical Point Case D1: CLC is discontinuous
+            // find s_0 such where CLC fails
+            //########################################
+            //int ictr = 0;
+            //while (s >= constraints.resprofileslist.svect.at(i) && ictr <= constraints.resprofileslist.svect.size()){
+            //        ictr=ictr+1;
+            //}
+
+            //constraints.SetCriticalPoint(ictr, s);
+
             continue;
         }
 
