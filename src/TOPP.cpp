@@ -1299,7 +1299,7 @@ int IntegrateForward(Constraints& constraints, dReal sstart, dReal sdstart, dRea
             sdvect.push_back(sdcur);
             sddvect.push_back(0);
             constraints.SetCriticalPoint(svect.size(), scur);
-            std::cout << "LC hit s0 at " << svect.size() << " val=" << scur << " sbeg=" << sdstart << std::endl;
+            //std::cout << "LC hit s0 at " << svect.size() << " val=" << scur << " sbeg=" << sdstart << std::endl;
             returntype = INT_BOTTOM;
             break;
         }
@@ -1725,8 +1725,13 @@ int ComputeLimitingCurves(Constraints& constraints){
         }
 
         if(integratestatus == INT_BOTTOM) {
-            std::cout << str(boost::format("IntegrateBackward INT_BOTTOM, s=%.15e, sd=%.15e\n")%sbackward%sdbackward) << std::endl;
+            dReal send = constraints.trajectory.duration;
+            std::cout << str(boost::format("IntegrateBackward INT_BOTTOM, s=%.5f/%.5f, sd=%.5f\n")%sbackward%send%sdbackward) << std::endl;
             std::cout << "SwitchPoint:" << sswitch << " val=" << sdswitch << std::endl;
+            //dReal send = constraints.trajectory.duration;
+            dReal ds = constraints.integrationtimestep;
+            int index = sbackward/ds;
+            constraints.SetCriticalPoint(index, sbackward);
             return CLC_BOTTOM;
         }
 
@@ -1740,7 +1745,10 @@ int ComputeLimitingCurves(Constraints& constraints){
         }
 
         if(integratestatus == INT_BOTTOM) {
-            std::cout << str(boost::format("IntegrateForward INT_BOTTOM, s=%.15e, sd=%.15e\n")%sforward%sdforward) << std::endl;
+            std::cout << str(boost::format("IntegrateForward INT_BOTTOM, s=%.5f, sd=%.5f\n")%sforward%sdforward) << std::endl;
+            dReal ds = constraints.integrationtimestep;
+            int index = sforward/ds;
+            constraints.SetCriticalPoint(index, sforward);
             return CLC_BOTTOM;
         }
     }
@@ -1804,6 +1812,18 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
             message = "CLC failed";
             std::cout << message << std::endl;
             integrateprofilesstatus = false;
+
+            //dReal send = constraints.trajectory.duration;
+            //int index = s/ds;
+            //message = str(boost::format("CLC discontinuous at %d s=%.5f/%.5f") % index % s % send);
+
+            //std::cout << message << std::endl;
+            //integrateprofilesstatus = false;
+            //########################################
+            //Critical Point Case D1: CLC is discontinuous
+            // find s_0 such where CLC fails
+            //########################################
+
             continue;
         }
 
@@ -2001,19 +2021,17 @@ int ComputeProfiles(Constraints& constraints, dReal sdbeg, dReal sdend){
             }
         }
         if(clcdiscontinuous) {
-            message = str(boost::format("CLC discontinuous s=%.15e")%s);
+            dReal send = constraints.trajectory.duration;
+            int index = s/ds;
+            message = str(boost::format("CLC discontinuous at %d s=%.5f/%.5f") % index % s % send);
+
             std::cout << message << std::endl;
             integrateprofilesstatus = false;
             //########################################
             //Critical Point Case D1: CLC is discontinuous
             // find s_0 such where CLC fails
             //########################################
-            //int ictr = 0;
-            //while (s >= constraints.resprofileslist.svect.at(i) && ictr <= constraints.resprofileslist.svect.size()){
-            //        ictr=ictr+1;
-            //}
-
-            //constraints.SetCriticalPoint(ictr, s);
+            constraints.SetCriticalPoint(index, s);
 
             continue;
         }
