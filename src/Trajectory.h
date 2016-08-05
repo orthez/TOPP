@@ -1,5 +1,4 @@
-#ifndef TRAJECTORY_H
-#define TRAJECTORY_H
+#pragma once
 
 namespace TOPP {
 
@@ -99,9 +98,4 @@ public:
     // Write the trajectory to the stream
     void Write(std::stringstream& ss);
 };
-
-
 } // End namespace TOPP
-
-
-#endif // TRAJECTORY_H

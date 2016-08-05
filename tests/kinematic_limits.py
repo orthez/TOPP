@@ -45,8 +45,8 @@ vmax = 2*ones(ndof)  # Velocity limits
 amax = 10*ones(ndof) # Acceleration limits
 
 # Set up the TOPP instance
-discrtimestep = 0.005
-uselegacy = True
+discrtimestep = 1e-3
+uselegacy = False
 t0 = time.time()
 if uselegacy: #Using the legacy KinematicLimits (a bit faster but not fully supported)
     constraintstring = str(discrtimestep)
@@ -83,4 +83,4 @@ traj1 = Trajectory.PiecewisePolynomialTrajectory.FromString(x.restrajectorystrin
 dtplot = 0.01
 TOPPpy.PlotKinematics(traj0,traj1,dtplot,vmax,amax)
 
-raw_input()
+#raw_input()

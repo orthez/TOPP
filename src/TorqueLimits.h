@@ -16,11 +16,10 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef TorqueLimits_H
-#define TorqueLimits_H
-
+#pragma once
 
 #include "TOPP.h"
+#include "Constraints.h"
 
 
 namespace TOPP {
@@ -43,5 +42,3 @@ public:
     void InterpolateDynamics(dReal s, std::vector<dReal>& a, std::vector<dReal>& b, std::vector<dReal>& c); // Linearly interpolate dynamics coefficients
 };
 }
-
-#endif

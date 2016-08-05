@@ -17,6 +17,7 @@
 
 
 #include "TOPP.h"
+#include "Constraints.h"
 
 
 namespace TOPP {
@@ -510,8 +511,9 @@ int Trajectory::Reparameterize(Constraints& constraints, Trajectory& restrajecto
             SPieceToChunks(scur, sdcur, sdd, dtmod, currentchunkindex,
                            processedcursor, itcurrentchunk, newchunkslist);
         }
-        else
+        else{
             break;
+        }
         t+= dtmod;
         scur = snext;
         sdcur = sdnext2;

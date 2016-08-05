@@ -14,14 +14,14 @@
 //
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef TOPP_TORQUELIMITSRAVE3_H
-#define TOPP_TORQUELIMITSRAVE3_H
 
+#pragma once
 #ifdef WITH_OPENRAVE
 
 #include <openrave/openrave.h>
 
 #include "TOPP.h"
+#include "QuadraticConstraints.h"
 
 namespace TOPP {
 
@@ -43,5 +43,4 @@ protected:
 
 }
 
-#endif
 #endif
